@@ -1,6 +1,6 @@
 <template>
   <!-- loadMore -->
-  <view class="bottom_loading_box">
+  <view class="bottom_loading_box" :style="{ paddingTop: padding, paddingBottom: padding }">
     <view class="box_right" v-if="status == 'loading'">
       <view
         v-if="mode == 'loading1'"
@@ -19,11 +19,19 @@
         <view class="line li3" :style="{ 'background-color': color }"></view>
       </view>
       <view v-if="mode == 'loading3'" class="loading_3" :style="{ 'border-top-color': color }"></view>
-      <view v-if="mode == 'loading4'" class="loading_4" :class="{ left: !showTitle }"></view>
+      <!-- <view v-if="mode == 'loading4'" class="loading_4" :class="{ left: !showTitle }"></view> -->
+      <view v-if="mode == 'loading4'" class="loading_4">
+        <view class="b1" :style="{ 'border-color': color }"></view>
+        <view class="b2" :style="{ 'border-color': color }"></view>
+      </view>
     </view>
-    <view class="box_left" :style="{ color: color }" :class="{ left: mode == 'loading4' }" v-if="showTitle">{{
-      status == "down" ? loadTitle.down : status == "loading" ? loadTitle.loading : loadTitle.normal
-    }}</view>
+    <view
+      class="box_left"
+      :style="{ color: textColor || color, fontSize: textSize }"
+      :class="{ left: mode == 'loading4' }"
+      v-if="showTitle"
+      >{{ status == "down" ? loadTitle.down : status == "loading" ? loadTitle.loading : loadTitle.normal }}</view
+    >
   </view>
 </template>
 
@@ -48,20 +56,27 @@ export default {
     /* 加载中文本 */
     loadTitle: {
       type: Object,
-      default(){
-		  return {
-			    down: "上拉显示更多",
-			    loading: "正在加载...",
-			    normal: "-- 没有更多了 --",
-		  }
-	  }
+      default() {
+        return {
+          down: "上拉显示更多",
+          loading: "正在加载...",
+          normal: "-- 没有更多了 --",
+        };
+      },
     },
-    /* 颜色 loading 1 2 有效 */
+    /* loading 颜色 */
     color: {
       type: String,
       default: "#FFF",
     },
-    /* padding */
+    /* 上下边距 */
+    padding: {
+      type: String,
+      default: "20rpx",
+    },
+    /* 文字样式 */
+    textColor: String,
+    textSize: String,
   },
 };
 </script>
@@ -156,10 +171,8 @@ $loading4Wh: 8px;
       border-radius: 50%;
       position: relative;
       opacity: 1;
-
-      &:before,
-      &:after {
-        content: "";
+      .b1,
+      .b2 {
         border: $loading4Wh #ffffff solid;
         border-radius: 50%;
         width: 100%;
@@ -168,14 +181,12 @@ $loading4Wh: 8px;
         top: -8px;
         left: -8px;
       }
-
-      &:before {
+      .b1 {
         transform: scale(1, 1);
         opacity: 1;
         animation: spWaveBe 0.6s infinite linear;
       }
-
-      &:after {
+      .b2 {
         transform: scale(0, 0);
         opacity: 0;
         animation: spWaveAf 0.6s infinite linear;
